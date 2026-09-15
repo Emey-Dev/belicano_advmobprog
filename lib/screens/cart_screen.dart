@@ -9,7 +9,7 @@ import '../widgets/custom_text.dart';
 import 'product_details_screen.dart';
 
 class CartScreen extends StatefulWidget {
-  // Ench 3
+  // Enhancement 3
   final int userId;
   const CartScreen({super.key, this.userId = currentUserId});
 
@@ -20,10 +20,10 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   final _service = CartService();
 
-  Cart? _cart; // Ench 3
-  bool _loading = true; // Ench 3
-  String? _error; // Ench 3
-  final Set<int> _busy = {}; // Ench 3
+  Cart? _cart; // Enhancement 3
+  bool _loading = true; // Enhancement 3
+  String? _error; // Enhancement 3
+  final Set<int> _busy = {}; // Enhancement 3
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _CartScreenState extends State<CartScreen> {
     _loadCart();
   }
 
-  // Ench 3
+  // Enhancement 3
   Future<void> _loadCart() async {
     setState(() {
       _loading = true;
@@ -53,7 +53,7 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  // Ench 3
+  // Enhancement 3
   Future<void> _updateQuantity(CartProduct product, int newQty) async {
     if (_cart == null) return;
     List<CartProduct> updated;
@@ -89,7 +89,7 @@ class _CartScreenState extends State<CartScreen> {
     await _updateQuantity(product, 0);
   }
 
-  // Ench 3
+  // Enhancement 3
   Future<void> _confirmOrder() async {
     if (_cart == null) return;
     final cartId = _cart!.id;
@@ -102,7 +102,7 @@ class _CartScreenState extends State<CartScreen> {
 
     try {
       final deleted = await _service.deleteCart(cartId);
-      if (mounted) Navigator.of(context).pop(); // Ench 3
+      if (mounted) Navigator.of(context).pop(); // Enhancement 3
 
       if (deleted.isDeleted && mounted) {
         setState(() {
@@ -145,7 +145,7 @@ class _CartScreenState extends State<CartScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          // Ench 3
+          // Enhancement 3
           IconButton(
             icon: Icon(Icons.refresh, size: 24.sp),
             tooltip: 'Refresh cart',
@@ -157,7 +157,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ],
       ),
-      // Ench 2
+      // Enhancement 2
       body: _buildBody(colorScheme),
     );
   }
@@ -222,14 +222,14 @@ class _CartScreenState extends State<CartScreen> {
 
     return Column(
       children: [
-        // Ench 3
+        // Enhancement 3
         Expanded(
           child: ListView.builder(
             padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              // Ench 3
+              // Enhancement 3
               return Dismissible(
                 key: ValueKey(product.id),
                 direction: DismissDirection.endToStart,
@@ -250,6 +250,7 @@ class _CartScreenState extends State<CartScreen> {
                 onDismissed: (_) => _removeProduct(product),
                 child: _CartItemCard(
                   product: product,
+                  userId: widget.userId,
                   isBusy: _busy.contains(product.id),
                   onIncrement: () =>
                       _updateQuantity(product, product.quantity + 1),
@@ -320,21 +321,23 @@ class _CartScreenState extends State<CartScreen> {
   }
 }
 
-// Ench 1
+// Enhancement 1
 class _CartItemCard extends StatelessWidget {
   const _CartItemCard({
     required this.product,
+    required this.userId,
     required this.isBusy,
     required this.onIncrement,
     required this.onDecrement,
   });
 
   final CartProduct product;
-  final bool isBusy; // Ench 1
+  final int userId;
+  final bool isBusy; // Enhancement 1
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
 
-  // Ench 1
+  // Enhancement 1
   Product _toProduct() => Product(
     id: product.id,
     title: product.title,
@@ -366,12 +369,13 @@ class _CartItemCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
-      // Ench 1
+      // Enhancement 1
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => ProductDetailsScreen(
             product: _toProduct(),
+            userId: userId,
             showAddToCart: false,
           ),
         ),
@@ -411,7 +415,7 @@ class _CartItemCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 4.h),
-                  // Ench 1
+                  // Enhancement 1
                   CustomText(
                     text: 'PHP ${product.price.toStringAsFixed(2)}',
                     fontSize: 13.sp,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'article_list_screen.dart';
+import 'profile_screen.dart';
 import 'product_screen.dart';
 import '../widgets/custom_text.dart';
 
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
           automaticallyImplyLeading: false,
           elevation: 2,
           title: (_selectedIndex == 0)
-              ? Image.asset('assets/images/nubdexchange_logo.jpg', scale: 11.sp)
+              ? Image.asset('assets/images/nubdexchange_logo.png', scale: 11.sp)
               : CustomText(
                   text: (_selectedIndex == 1)
                       ? 'Articles'
@@ -49,16 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
             PageView(
               physics: const NeverScrollableScrollPhysics(),
               controller: _pageController,
-              children: <Widget>[
-                const ProductScreen(),
-                const ArticleListScreen(),
-                Center(
-                  child: CustomText(
-                    text: 'Profile page coming soon',
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              children: const <Widget>[
+                ProductScreen(),
+                ArticleListScreen(),
+                ProfileScreen(),
               ],
               onPageChanged: (page) {
                 setState(() {

@@ -3,8 +3,7 @@ import 'package:http/http.dart' as http;
 import '../constants.dart';
 import '../models/cart_model.dart';
 
-  // Ench 3
-// Ench 3
+  // Enhancement 3
 
 class CartService {
   static final Map<int, Cart> _sessionCarts = {};
@@ -31,7 +30,7 @@ class CartService {
     return _buildMockCart();
   }
 
-  // Ench 3
+  // Enhancement 3
   Future<List<Cart>> getCartByUser(int userId) async {
     final sessionCart = _sessionCarts[userId];
     if (sessionCart != null) return [sessionCart];
@@ -52,7 +51,7 @@ class CartService {
     return [_buildMockCart()];
   }
 
-    // Ench 3
+    // Enhancement 3
   Future<Cart> addToCart({
     required int userId,
     required List<CartProductInput> products,
@@ -172,7 +171,7 @@ class CartService {
   }
 }
 
-// Ench 3
+// Enhancement 3
 const _mockItems = [
   {'id': 1, 'title': 'NU Shirt 1',  'price': 700,  'thumbnail': 'assets/images/nu_shirt1.jpg'},
   {'id': 2, 'title': 'NU Shirt 2',  'price': 1100, 'thumbnail': 'assets/images/nu_shirt2.jpg'},

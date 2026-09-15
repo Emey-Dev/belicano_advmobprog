@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../constants.dart';
 import '../models/cart_model.dart';
 import '../models/product_model.dart';
 import 'cart_screen.dart';
 import 'product_details_screen.dart';
 
 import '../services/cart_service.dart';
+import '../services/user_service.dart';
 
 import '../widgets/custom_text.dart';
 
@@ -21,11 +23,18 @@ class _ProductScreenState extends State<ProductScreen> {
   late final Future<List<Product>> _productsFuture;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  int _userId = currentUserId;
 
   @override
   void initState() {
     super.initState();
     _productsFuture = _loadCartProducts();
+    _loadUserId();
+  }
+
+  Future<void> _loadUserId() async {
+    final user = await UserService().getUser();
+    if (mounted && user.id != 0) setState(() => _userId = user.id);
   }
 
   Future<List<Product>> _loadCartProducts() async {
@@ -109,7 +118,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     tooltip: 'Cart',
                     onPressed: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const CartScreen()),
+                      MaterialPageRoute(builder: (_) => CartScreen(userId: _userId)),
                     ),
                     icon: Icon(
                       Icons.shopping_cart_outlined,
@@ -179,7 +188,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ProductDetailsScreen(product: product),
+                            builder: (_) => ProductDetailsScreen(product: product, userId: _userId),
                           ),
                         );
                       },

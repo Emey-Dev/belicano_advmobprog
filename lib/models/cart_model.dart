@@ -1,4 +1,4 @@
-// Ench 3
+// Enhancement 3
 class Cart {
   final int id;
   final List<CartProduct> products;
@@ -7,7 +7,7 @@ class Cart {
   final int userId;
   final int totalProducts;
   final int totalQuantity;
-  // Ench 3
+  // Enhancement 3
   final bool isDeleted;
   final String? deletedOn;
 
@@ -52,7 +52,7 @@ class Cart {
     };
   }
 
-  // Ench 3
+  // Enhancement 3
   Cart copyWithProducts(List<CartProduct> newProducts) {
     final double newTotal =
         newProducts.fold(0.0, (sum, p) => sum + p.total);
@@ -120,7 +120,7 @@ class CartProduct {
     };
   }
 
-  // Ench 3
+  // Enhancement 3
   CartProduct copyWithQuantity(int newQty) {
     final double newTotal = price * newQty;
     final double newDiscounted = newTotal * (1 - discountPercentage / 100);
@@ -137,7 +137,7 @@ class CartProduct {
   }
 }
 
-// Ench 3
+// Enhancement 3
 class CartProductInput {
   final int id;
   final int quantity;

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../constants.dart';
 import '../models/product_model.dart';
 
-// Ench 1
+// Enhancement 1
 
 class ProductService {
   Future<List<Product>> getAllProducts() async {

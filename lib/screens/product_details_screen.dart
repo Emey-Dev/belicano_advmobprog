@@ -10,11 +10,13 @@ import '../widgets/custom_text.dart';
 class ProductDetailsScreen extends StatelessWidget {
   final Product product;
   final bool showAddToCart;
+  final int userId;
 
   const ProductDetailsScreen({
     super.key,
     required this.product,
     this.showAddToCart = true,
+    this.userId = currentUserId,
   });
 
   @override
@@ -114,7 +116,7 @@ class ProductDetailsScreen extends StatelessWidget {
               //   fontWeight: FontWeight.normal,
               // ),
               SizedBox(height: 24.h),
-              // Ench 1
+              // Enhancement 1
               SizedBox(
                 width: double.infinity,
                 height: 54.h,
@@ -130,7 +132,7 @@ class ProductDetailsScreen extends StatelessWidget {
               ),
               if (showAddToCart) ...[
                 SizedBox(height: 12.h),
-                // Ench 3
+                // Enhancement 3
                 SizedBox(
                   width: double.infinity,
                   height: 54.h,
@@ -138,7 +140,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     onPressed: () async {
                       try {
                         await CartService().addToCart(
-                          userId: currentUserId,
+                          userId: userId,
                           products: [
                             CartProductInput(id: product.id, quantity: 1),
                           ],
