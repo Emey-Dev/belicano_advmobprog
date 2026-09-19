@@ -29,12 +29,13 @@ class _SignInScreenState extends State<SignInScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
     try {
-      final user = await _userService.loginUser(
+      await _userService.loginUser(
         _usernameController.text.trim(),
         _passwordController.text,
       );
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/home', arguments: user);
+      // Enhancement 1
+      Navigator.pushNamedAndRemoveUntil(context, '/splash', (_) => false);
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

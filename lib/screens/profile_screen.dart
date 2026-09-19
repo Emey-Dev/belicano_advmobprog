@@ -24,7 +24,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _logout() async {
     await _userService.logout();
     if (!mounted) return;
-    Navigator.pushNamedAndRemoveUntil(context, '/signin', (_) => false);
+    // Enhancement 1
+    Navigator.pushNamedAndRemoveUntil(context, '/splash', (_) => false);
   }
 
   @override
