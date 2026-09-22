@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/theme_provider.dart';
+import '../services/user_service.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -9,18 +10,13 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Appearance',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('Appearance', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             Card(
               child: SwitchListTile(
@@ -37,6 +33,22 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 value: context.watch<ThemeProvider>().isDark,
                 onChanged: (_) => context.read<ThemeProvider>().toggleTheme(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Log out'),
+                onTap: () async {
+                  await UserService().logout();
+                  if (!context.mounted) return;
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/signin',
+                    (_) => false,
+                  );
+                },
               ),
             ),
           ],
