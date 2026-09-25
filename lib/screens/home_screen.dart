@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'article_list_screen.dart';
+import 'chat_screen.dart';
 import 'profile_screen.dart';
 import 'product_screen.dart';
 import '../widgets/custom_text.dart';
@@ -34,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
               : CustomText(
                   text: (_selectedIndex == 1)
                       ? 'Articles'
-                      : (_selectedIndex == 2) ? 'Profile' : 'Home',
+                      : (_selectedIndex == 2)
+                      ? 'Profile'
+                      : 'Home',
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w600,
                 ),
@@ -62,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             Positioned(
-              left: sideInset,
+              right: sideInset,
               bottom: 16.h,
               child: FloatingActionButton(
                 heroTag: 'chatFab',
@@ -114,210 +117,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openChat() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      builder: (_) => const _ChatSheet(),
-    );
-  }
-}
-
-class _ChatSheet extends StatefulWidget {
-  const _ChatSheet();
-
-  @override
-  State<_ChatSheet> createState() => _ChatSheetState();
-}
-
-class _ChatSheetState extends State<_ChatSheet> {
-  final _messageController = TextEditingController();
-  final List<String> _buyerMessages = ['Hi! Is the NU shirt still available?'];
-  final List<String> _sellerMessages = [
-    'Hello! Yes, it is available.',
-    'You can add it to your cart whenever you are ready.',
-  ];
-
-  @override
-  void dispose() {
-    _messageController.dispose();
-    super.dispose();
-  }
-
-  void _sendMessage() {
-    final message = _messageController.text.trim();
-    if (message.isEmpty) return;
-    setState(() {
-      _buyerMessages.add(message);
-      _messageController.clear();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final messages = <({String text, bool isBuyer})>[
-      (text: _buyerMessages[0], isBuyer: true),
-      ..._sellerMessages.map(
-        (message) => (text: message, isBuyer: false),
-      ),
-      ..._buyerMessages.skip(1).map(
-        (message) => (text: message, isBuyer: true),
-      ),
-    ];
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: Container(
-        height: 440.h,
-        padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-        ),
-        child: Column(
-          children: [
-            Container(
-              width: 42.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-            ),
-            SizedBox(height: 14.h),
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: colorScheme.primaryContainer,
-                  child: Icon(
-                    Icons.storefront_outlined,
-                    color: colorScheme.onPrimaryContainer,
-                  ),
-                ),
-                SizedBox(width: 10.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'NU BD Exchange Seller',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      'Usually replies quickly',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Divider(height: 24.h),
-            Expanded(
-              child: ListView.separated(
-                itemCount: messages.length,
-                separatorBuilder: (_, __) => SizedBox(height: 10.h),
-                itemBuilder: (context, index) {
-                  final message = messages[index];
-                  return _ChatBubble(
-                    message: message.text,
-                    isBuyer: message.isBuyer,
-                  );
-                },
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    onSubmitted: (_) => _sendMessage(),
-                    textInputAction: TextInputAction.send,
-                    decoration: InputDecoration(
-                      hintText: 'Write a message',
-                      filled: true,
-                      fillColor: colorScheme.surfaceContainerHighest,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 14.w),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24.r),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                IconButton.filled(
-                  onPressed: _sendMessage,
-                  tooltip: 'Send message',
-                  icon: const Icon(Icons.send_rounded),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ChatBubble extends StatelessWidget {
-  const _ChatBubble({required this.message, required this.isBuyer});
-
-  final String message;
-  final bool isBuyer;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final background = isBuyer
-        ? colorScheme.primaryContainer
-        : colorScheme.surfaceContainerHighest;
-    final foreground = isBuyer
-        ? colorScheme.onPrimaryContainer
-        : colorScheme.onSurface;
-
-    return Align(
-      alignment: isBuyer ? Alignment.centerRight : Alignment.centerLeft,
-      child: Column(
-        crossAxisAlignment:
-            isBuyer ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Text(
-            isBuyer ? 'You' : 'Seller',
-            style: TextStyle(
-              fontSize: 11.sp,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-          SizedBox(height: 3.h),
-          Container(
-            constraints: BoxConstraints(maxWidth: 270.w),
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
-            decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(14.r),
-            ),
-            child: Text(message, style: TextStyle(color: foreground, fontSize: 14.sp)),
-          ),
-        ],
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const ChatScreen()),
     );
   }
 }
 
 class _BottomNavigationBar extends StatelessWidget {
-  const _BottomNavigationBar({
-    required this.height,
-    required this.children,
-  });
+  const _BottomNavigationBar({required this.height, required this.children});
 
   final double height;
   final List<Widget> children;
@@ -325,9 +133,11 @@ class _BottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final headerColor =
+        Theme.of(context).appBarTheme.backgroundColor ?? colorScheme.surface;
 
     return Material(
-      color: colorScheme.surfaceContainerHigh,
+      color: headerColor,
       elevation: 8,
       shadowColor: colorScheme.shadow.withOpacity(0.28),
       child: SizedBox(
@@ -358,7 +168,10 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final color = selected ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant;
+    final iconColor = selected ? colorScheme.onPrimary : Colors.white;
+    final labelColor = selected
+        ? colorScheme.primary
+        : Colors.white.withValues(alpha: 0.82);
 
     return Semantics(
       button: true,
@@ -377,16 +190,16 @@ class _NavItem extends StatelessWidget {
                 curve: Curves.easeOut,
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: selected ? colorScheme.primaryContainer : Colors.transparent,
+                  color: selected ? colorScheme.primary : Colors.transparent,
                   borderRadius: BorderRadius.circular(16.r),
                 ),
-                child: Icon(icon, color: color, size: 22.sp),
+                child: Icon(icon, color: iconColor, size: 22.sp),
               ),
               SizedBox(height: 2.h),
               Text(
                 label,
                 style: TextStyle(
-                  color: color,
+                  color: labelColor,
                   fontSize: 11.sp,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
