@@ -157,6 +157,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemCount: users.length,
                   itemBuilder: (context, index) {
                     final user = users[index];
+                    final displayName = [user['firstName'], user['lastName']]
+                        .whereType<String>()
+                        .map((name) => name.trim())
+                        .where((name) => name.isNotEmpty)
+                        .join(' ');
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -183,7 +188,9 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           ),
                           title: CustomText(
-                            text: user['firstName'] ?? 'Unknown',
+                            text: displayName.isNotEmpty
+                                ? displayName
+                                : (user['username'] ?? 'Unknown').toString(),
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),

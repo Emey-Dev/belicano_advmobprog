@@ -21,66 +21,51 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double sideInset = 20.w;
     final double barHeight = 64.h;
 
     return PopScope(
       canPop: false,
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 2,
-          title: (_selectedIndex == 0)
-              ? Image.asset('assets/images/nubdexchange_logo.png', scale: 11.sp)
-              : CustomText(
-                  text: (_selectedIndex == 1)
-                      ? 'Articles'
-                      : (_selectedIndex == 2)
-                      ? 'Profile'
-                      : 'Home',
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.settings, size: 24.sp),
-              onPressed: () => Navigator.pushNamed(context, '/settings'),
-            ),
-          ],
-        ),
-        body: Stack(
-          children: [
-            PageView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: _pageController,
-              children: const <Widget>[
-                ProductScreen(),
-                ArticleListScreen(),
-                ProfileScreen(),
-              ],
-              onPageChanged: (page) {
-                setState(() {
-                  _selectedIndex = page;
-                });
-              },
-            ),
-            Positioned(
-              right: sideInset,
-              bottom: 16.h,
-              child: FloatingActionButton(
-                heroTag: 'chatFab',
-                onPressed: _openChat,
-                backgroundColor: const Color(0xFFE4A800),
-                foregroundColor: Colors.white,
-                elevation: 4,
-                tooltip: 'Chat',
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.r),
-                ),
-                child: Icon(Icons.chat_bubble_outline, size: 24.sp),
+        appBar: _selectedIndex == 1
+            ? null
+            : AppBar(
+                automaticallyImplyLeading: false,
+                elevation: 2,
+                title: (_selectedIndex == 0)
+                    ? Image.asset(
+                        'assets/images/nubdexchange_logo.png',
+                        scale: 11.sp,
+                      )
+                    : CustomText(
+                        text: (_selectedIndex == 2)
+                            ? 'Articles'
+                            : (_selectedIndex == 3)
+                            ? 'Profile'
+                            : 'Home',
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.settings, size: 24.sp),
+                    onPressed: () => Navigator.pushNamed(context, '/settings'),
+                  ),
+                ],
               ),
-            ),
+        body: PageView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _pageController,
+          children: const <Widget>[
+            ProductScreen(),
+            ChatScreen(),
+            ArticleListScreen(),
+            ProfileScreen(),
           ],
+          onPageChanged: (page) {
+            setState(() {
+              _selectedIndex = page;
+            });
+          },
         ),
         bottomNavigationBar: _BottomNavigationBar(
           height: barHeight,
@@ -92,16 +77,22 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => _onTappedBar(0),
             ),
             _NavItem(
-              icon: Icons.article,
-              label: 'Articles',
+              icon: Icons.chat_bubble_outline,
+              label: 'Chat',
               selected: _selectedIndex == 1,
               onTap: () => _onTappedBar(1),
             ),
             _NavItem(
-              icon: Icons.person,
-              label: 'Profile',
+              icon: Icons.article,
+              label: 'Articles',
               selected: _selectedIndex == 2,
               onTap: () => _onTappedBar(2),
+            ),
+            _NavItem(
+              icon: Icons.person,
+              label: 'Profile',
+              selected: _selectedIndex == 3,
+              onTap: () => _onTappedBar(3),
             ),
           ],
         ),
@@ -114,13 +105,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedIndex = value;
     });
     _pageController.jumpToPage(value);
-  }
-
-  void _openChat() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const ChatScreen()),
-    );
   }
 }
 

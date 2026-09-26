@@ -128,11 +128,19 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final tappedUserId = (widget.tappedUser['uid'] ?? '').toString();
-    final tappedUserName = (widget.tappedUser['firstName'] ?? '').toString();
+    final tappedUserName =
+        [widget.tappedUser['firstName'], widget.tappedUser['lastName']]
+            .whereType<String>()
+            .map((name) => name.trim())
+            .where((name) => name.isNotEmpty)
+            .join(' ');
+    final displayName = tappedUserName.isNotEmpty
+        ? tappedUserName
+        : (widget.tappedUser['username'] ?? '').toString();
     final tappedUserImage = (widget.tappedUser['image'] ?? '').toString();
-    final tappedUserInitial = tappedUserName.trim().isEmpty
+    final tappedUserInitial = displayName.trim().isEmpty
         ? '?'
-        : tappedUserName.trim()[0].toUpperCase();
+        : displayName.trim()[0].toUpperCase();
 
     return FutureBuilder<String>(
       future: _currentUserIdFuture,
@@ -178,7 +186,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 SizedBox(width: 10.w),
                 Expanded(
                   child: CustomText(
-                    text: tappedUserName.isEmpty ? 'Chat' : tappedUserName,
+                    text: displayName.isEmpty ? 'Chat' : displayName,
                     fontSize: 19.sp,
                     fontWeight: FontWeight.w600,
                   ),
